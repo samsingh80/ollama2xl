@@ -1,14 +1,14 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ServingTemplate
 metadata:
-  name: ollama2xl
+  name: ollamal2xl
   annotations:
     scenarios.ai.sap.com/description: "Run a ollama server on SAP AI Core"
-    scenarios.ai.sap.com/name: "ollama2xl"
+    scenarios.ai.sap.com/name: "ollamal2xl"
     executables.ai.sap.com/description: "ollama service"
-    executables.ai.sap.com/name: "ollama2xl"
+    executables.ai.sap.com/name: "ollamal2xl"
   labels:
-    scenarios.ai.sap.com/id: "ollama2xl"
+    scenarios.ai.sap.com/id: "ollamal2xl"
     ai.sap.com/version: "0.0.1"
 spec:
   template:
@@ -17,8 +17,7 @@ spec:
       annotations: |
         autoscaling.knative.dev/metric: concurrency
         autoscaling.knative.dev/target: 1
-        autoscaling.knative.dev/targetBurstCapacity: 1
-        autoscaling.knative.dev/scaleToZeroDisabled: "true"
+        autoscaling.knative.dev/targetBurstCapacity: 0
       labels: |
         ai.sap.com/resourcePlan: infer.2xl
     spec: |
@@ -33,24 +32,3 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-          env:
-            - name: OLLAMA_KEEP_ALIVE
-              value: "-1"
-            - name: OLLAMA_MAX_LOADED_MODELS
-              value: "1"
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 300
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 15
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 600
-            periodSeconds: 60
-            timeoutSeconds: 10
-            failureThreshold: 5
