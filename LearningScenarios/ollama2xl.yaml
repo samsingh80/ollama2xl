@@ -1,14 +1,14 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ServingTemplate
 metadata:
-  name: ollama
+  name: ollama2xl
   annotations:
     scenarios.ai.sap.com/description: "Run a ollama server on SAP AI Core"
-    scenarios.ai.sap.com/name: "ollama"
+    scenarios.ai.sap.com/name: "ollama2xl"
     executables.ai.sap.com/description: "ollama service"
-    executables.ai.sap.com/name: "ollama"
+    executables.ai.sap.com/name: "ollama2xl"
   labels:
-    scenarios.ai.sap.com/id: "ollama"
+    scenarios.ai.sap.com/id: "ollama2xl"
     ai.sap.com/version: "0.0.1"
 spec:
   template:
