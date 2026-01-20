@@ -1,0 +1,56 @@
+apiVersion: ai.sap.com/v1alpha1
+kind: ServingTemplate
+metadata:
+  name: ollama
+  annotations:
+    scenarios.ai.sap.com/description: "Run a ollama server on SAP AI Core"
+    scenarios.ai.sap.com/name: "ollama"
+    executables.ai.sap.com/description: "ollama service"
+    executables.ai.sap.com/name: "ollama"
+  labels:
+    scenarios.ai.sap.com/id: "ollama"
+    ai.sap.com/version: "0.0.1"
+spec:
+  template:
+    apiVersion: "serving.kserve.io/v1beta1"
+    metadata:
+      annotations: |
+        autoscaling.knative.dev/metric: concurrency
+        autoscaling.knative.dev/target: 1
+        autoscaling.knative.dev/targetBurstCapacity: 1
+        autoscaling.knative.dev/scaleToZeroDisabled: "true"
+      labels: |
+        ai.sap.com/resourcePlan: infer.2xl
+    spec: |
+      predictor:
+        imagePullSecrets:
+        - name: olamagit
+        minReplicas: 1
+        maxReplicas: 1
+        containers:
+        - name: kserve-container
+          image: docker.io/jeyasinghsamuelponnusamydur043/ollama:ai-core
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: OLLAMA_KEEP_ALIVE
+              value: "-1"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "1"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 300
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 15
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 600
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 5
